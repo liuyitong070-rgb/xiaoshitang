@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F5F4F1">
+  <meta name="description" content="小食堂 · 河北地质大学校园就餐平台：食堂拥挤度、今日菜单、预约点餐、空座查询、食堂导航">
+  <title>小食堂 · 校园便捷就餐平台</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23E2552F'/><text x='50' y='72' font-size='60' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>食</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">食</span>
+        <div class="brand-text">
+          <h1>小食堂</h1>
+          <p>河北地质大学 · 校园就餐平台</p>
+        </div>
+      </div>
+      <button class="icon-btn" id="bellBtn" aria-label="食堂消息"></button>
+    </header>
+
+    <main id="main">
+      <section class="page active" id="page-home"></section>
+      <section class="page" id="page-order"></section>
+      <section class="page" id="page-seat"></section>
+      <section class="page" id="page-map"></section>
+      <section class="page" id="page-me"></section>
+    </main>
+
+    <nav class="tabbar" id="tabbar">
+      <button class="tab active" data-page="home" aria-label="首页"></button>
+      <button class="tab" data-page="order" aria-label="点餐"></button>
+      <button class="tab" data-page="seat" aria-label="座位"></button>
+      <button class="tab" data-page="map" aria-label="导航"></button>
+      <button class="tab" data-page="me" aria-label="我的"></button>
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="js/icons.js"></script>
+  <script src="js/util.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/sim.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/order.js"></script>
+  <script src="js/seat.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/me.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
