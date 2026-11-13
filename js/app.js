@@ -35,6 +35,9 @@
         p.classList.add('page-enter');
       }
     });
+    /* 同步无 JS 兜底的 radio（纯 CSS 切换显示） */
+    var rd = document.getElementById('rd-' + page);
+    if (rd) rd.checked = true;
     if (page === 'order') Order.init();          // 点餐页懒加载
     if (page === 'order') Order.updateCartBar();
     if (page === 'seat') Seat.init();            // 座位页懒加载
@@ -88,17 +91,25 @@
     bindEvents();
 
     var home = U.$('#page-home');
-    home.innerHTML = Home.skeleton();
+    /* 静态兜底：页面里已有预渲染内容时不要用骨架屏覆盖 */
+    if (!home.innerHTML.trim()) home.innerHTML = Home.skeleton();
 
     Data.load().then(function () {
       Home.render(STATE);
+      /* 预渲染模式：一次性渲染全部页面（tools/prerender.js 用它生成静态兜底） */
+      if (location.search.indexOf('prerender') !== -1) {
+        try { Order.init(); } catch (e) { console.error('prerender order:', e); }
+        try { Seat.init(); } catch (e) { console.error('prerender seat:', e); }
+        try { MapPage.init(); } catch (e) { console.error('prerender map:', e); }
+        try { MePage.init(); MePage.refresh(); } catch (e) { console.error('prerender me:', e); }
+      }
       setInterval(function () {
         Home.refreshCrowd(STATE);
         if (STATE.page === 'seat' && Seat) Seat.refresh();
         if (STATE.page === 'map' && MapPage) MapPage.refreshCrowd();
       }, 60 * 1000);
     }).catch(function () {
-      home.innerHTML = Home.errorState();
+      if (!home.innerHTML.trim()) home.innerHTML = Home.errorState();
     });
 
     /* 顶栏消息铃铛图标 */
@@ -106,6 +117,8 @@
   }
 
   window.App = { switchPage: switchPage, setCanteen: setCanteen, getState: function () { return STATE; } };
+  /* 点餐/座位模块直接读取的全局状态（共享同一对象引用，setCanteen 改动即时可见） */
+  window.STATE = STATE;
 
   document.addEventListener('DOMContentLoaded', boot);
 })();

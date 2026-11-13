@@ -161,7 +161,13 @@ main { padding: 0 16px 24px; }
 /* ---------------- 页面切换 ---------------- */
 .page { display: none; }
 
-.page.active { display: block; }
+/* 页面显示由隐藏 radio 驱动：无 JS 时点底部标签也能纯 CSS 切页；
+   JS 正常时 switchPage 会同步 radio 状态 */
+#rd-home:checked ~ .app #page-home,
+#rd-order:checked ~ .app #page-order,
+#rd-seat:checked ~ .app #page-seat,
+#rd-map:checked ~ .app #page-map,
+#rd-me:checked ~ .app #page-me { display: block; }
 
 .page-enter { animation: pageIn .28s cubic-bezier(.16, 1, .3, 1); }
 
@@ -204,6 +210,15 @@ main { padding: 0 16px 24px; }
 .tab.active { color: var(--accent-strong); font-weight: 600; }
 
 .tab:active { transform: scale(.92); }
+
+/* 无 JS 兜底：隐藏 radio + 选中标签高亮 */
+.pg-rd { position: absolute; opacity: 0; pointer-events: none; }
+label.tab { cursor: pointer; }
+#rd-home:checked ~ .app label[for="rd-home"],
+#rd-order:checked ~ .app label[for="rd-order"],
+#rd-seat:checked ~ .app label[for="rd-seat"],
+#rd-map:checked ~ .app label[for="rd-map"],
+#rd-me:checked ~ .app label[for="rd-me"] { color: var(--accent-strong); font-weight: 600; }
 
 /* ---------------- 食堂切换胶囊 ---------------- */
 .chips {
