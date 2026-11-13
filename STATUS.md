@@ -54,6 +54,21 @@
       偏好过滤；全部资源 200；8787/8788 双服务可访问）
 - [x] 步骤12 部署 GitHub Pages ✅（2026-11-09 23:13 上线；用户网页建仓库 + Git Credential Manager 弹窗授权，
       推送一次成功；Pages 开启后约 1 分钟生效）
+- [x] 步骤13 线上修复 ✅（2026-11-13 提交 a859069）：
+  1) **修复点餐/座位页生产环境崩溃**：order.js/seat.js 引用 app.js 闭包私有 STATE → 线上报
+     `STATE is not defined`（本地 smoke test 漏检，只测了纯函数）。修复：app.js 加
+     `window.STATE = STATE;`。这是用户手机「内容区空白」的真正原因之一。
+  2) **静态降级（防国内访问 github.io 的 JS 资源加载失败）**：预渲染流水线
+     `tools/prerender.js`——app.js 检测 `?prerender` 参数时把 5 个页面全部初始化；
+     无头 Edge `--dump-dom` 抓取 → node 脚本按 section 标签配对提取各页 HTML 注入
+     index.html 的 `<!--prerender-->` 占位符。index.html 现为 238KB 单文件，内容全部内嵌。
+  3) **纯 CSS 页签切换**：index.html 内置 5 个隐藏 radio + 静态 label 页签栏（内联 Phosphor
+     SVG 图标），CSS `#rd-X:checked ~ .app #page-X {display:block}` 实现无 JS 翻页；
+     app.js switchPage 同步 radio 状态；JS 加载后平滑升级（boot 守卫防止骨架屏/错误态
+     覆盖已内嵌内容）。
+  - 验证：无 JS 首页截图与带 JS 截图字节级相同（渲染一致）；无 JS 点餐页截图 md5 不同
+    （页签切换生效）；smoke test 全过；线上已确认 238KB 新 index.html 生效。
+  - 教训：smoke test 只测 vm 沙箱纯函数，漏了初始化路径 → 后续应补真实浏览器/dom 级测试。
 
 ## 已实现的技术底座（步骤5 建立）
 - 设计系统 css/style.css：番茄红单主色 #E2552F（按钮深阶 #C73F1B），暖灰底 #F5F4F1，
@@ -90,5 +105,6 @@
   每分钟定时器刷新首页拥挤度、座位页、导航页详情卡
 
 ## 下一步
-**已全部完成 ✅** 网站上线：https://liuyitong070-rgb.github.io/xiaoshitang/（2026-11-09 23:13）
+**已全部完成 ✅** 网站上线：https://liuyitong070-rgb.github.io/xiaoshitang/
+2026-11-13 线上修复（a859069）：STATE 崩溃修复 + 238KB 静态降级 + 纯 CSS 页签（步骤13）
 后续可做（非必需）：真实座位数据接入、菜品图、服务号跳转、提交作业演示
